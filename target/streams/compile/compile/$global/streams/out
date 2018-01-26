@@ -1,0 +1,4 @@
+[0m[[0m[31merror[0m] [0m[0m/home/decapo/apps/computer-database/app/views/editForm.scala.html:36:18: value formFiled is not a member of object views.html.helper.CSRF[0m
+[0m[[0m[31merror[0m] [0m[0m				@helper.CSRF.formFiled[0m
+[0m[[0m[31merror[0m] [0m[0m				             ^[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m

@@ -1,4 +1,4 @@
-@(computerForm: Form[Computer], companies: Seq[(String, String)])(implicit messages: Messages)
+@(computerForm: Form[Computer], companies: Seq[(String, String)])(implicit request: RequestHeader, messages: Messages)
 
 @import helper._
 
@@ -9,9 +9,9 @@
     <h1>Add a computer</h1>
     
     @form(routes.Application.save()) {
-        
+       	@helper.CSRF.formField 
         <fieldset>
-        
+       
             @inputText(computerForm("name"), '_label -> "Computer name")
             @inputText(computerForm("introduced"), '_label -> "Introduced date")
             @inputText(computerForm("discontinued"), '_label -> "Discontinued date")

@@ -1,4 +1,4 @@
-@(id: Long, computerForm: Form[Computer], companies : Seq[(String, String)])(implicit messages: Messages)
+@(id: Long, computerForm: Form[Computer], companies : Seq[(String, String)])(implicit request: RequestHeader, messages: Messages)
 
 @import helper._
 
@@ -9,9 +9,9 @@
     <h1>Edit computer</h1>
     
     @form(routes.Application.update(id)) {
-        
+        @helper.CSRF.formField
         <fieldset>
-        
+        		
             @inputText(computerForm("name"), '_label -> "Computer name")
             @inputText(computerForm("introduced"), '_label -> "Introduced date")
             @inputText(computerForm("discontinued"), '_label -> "Discontinued date")
@@ -33,6 +33,7 @@
     }
     
     @form(routes.Application.delete(id), 'class -> "topRight") {
+				@helper.CSRF.formField
         <input type="submit" value="Delete this computer" class="btn danger">
     }
     
