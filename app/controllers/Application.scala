@@ -10,15 +10,19 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{ AbstractController, ControllerComponents, Flash, RequestHeader }
 import views.html
 
+import play.api.db.slick.DatabaseConfigProvider
+
 import scala.concurrent.ExecutionContext
 
 /** Manage a database of computers. */
 class Application @Inject() (
-    companiesDao: CompaniesDAO,
+		dbConfigProvider: DatabaseConfigProvider,
+    //companiesDao: CompaniesDAO,
     computersDao: ComputersDAO,
     controllerComponents: ControllerComponents
 )(implicit executionContext: ExecutionContext) extends AbstractController(controllerComponents) with I18nSupport {
 
+	val companiesDao: CompaniesDAO = new CompaniesDAO(dbConfigProvider)
   /** This result directly redirect to the application home.*/
   val Home = Redirect(routes.Application.list(0, 2, ""))
 
