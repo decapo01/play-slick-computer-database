@@ -2,6 +2,8 @@
 
 This is an example Play application that uses Scala, and communicates with an in memory database using Slick.
 
+Currently this example only works with play 2.6.
+
 ## Play Slick Plugin
 The play slick plugin documentation is here:
 
