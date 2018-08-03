@@ -18,11 +18,11 @@ class ComputersDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProv
 
     implicit val dateColumnType = MappedColumnType.base[Date, Long](d => d.getTime, d => new Date(d))
 
-    def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
-    def name = column[String]("NAME")
-    def introduced = column[Option[Date]]("INTRODUCED")
+    def id                 = column[Long]("ID", O.PrimaryKey, O.AutoInc)
+    def name              = column[String]("NAME")
+    def introduced   = column[Option[Date]]("INTRODUCED")
     def discontinued = column[Option[Date]]("DISCONTINUED")
-    def companyId = column[Option[Long]]("COMPANY_ID")
+    def companyId    = column[Option[Long]]("COMPANY_ID")
 
     def * = (id.?, name, introduced, discontinued, companyId) <> (Computer.tupled, Computer.unapply _)
   }

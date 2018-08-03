@@ -1,4 +1,4 @@
-name := "computer-database-sample"
+name := "computerDatabaseSample"
 
 //PlayKeys.playOmnidoc := false
 

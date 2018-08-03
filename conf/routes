@@ -16,6 +16,9 @@ POST    /computers                  controllers.Application.save
 GET     /computers/:id              controllers.Application.edit(id:Long)
 POST    /computers/:id              controllers.Application.update(id:Long)
 
+
+GET     /companies                  controllers.CompanyController.index
+
 # Delete a computer
 POST    /computers/:id/delete       controllers.Application.delete(id:Long)
 

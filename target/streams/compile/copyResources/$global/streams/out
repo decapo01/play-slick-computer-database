@@ -1,8 +1,0 @@
-[0m[[0m[0mdebug[0m] [0m[0mCopy resource mappings: [0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/decapo/apps/computer-database/conf/application.conf,/home/decapo/apps/computer-database/target/scala-2.12/classes/application.conf)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/decapo/apps/computer-database/conf/routes,/home/decapo/apps/computer-database/target/scala-2.12/classes/routes)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/decapo/apps/computer-database/conf/messages,/home/decapo/apps/computer-database/target/scala-2.12/classes/messages)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/decapo/apps/computer-database/conf/evolutions,/home/decapo/apps/computer-database/target/scala-2.12/classes/evolutions)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/decapo/apps/computer-database/conf/logback.xml,/home/decapo/apps/computer-database/target/scala-2.12/classes/logback.xml)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/decapo/apps/computer-database/conf/evolutions/default,/home/decapo/apps/computer-database/target/scala-2.12/classes/evolutions/default)[0m
-[0m[[0m[0mdebug[0m] [0m[0m	(/home/decapo/apps/computer-database/conf/evolutions/default/1.sql,/home/decapo/apps/computer-database/target/scala-2.12/classes/evolutions/default/1.sql)[0m
