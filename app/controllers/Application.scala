@@ -5,7 +5,7 @@ import javax.inject.Inject
 import dao.{ CompaniesDAO, ComputersDAO }
 import models.Computer
 import play.api.data.Form
-import play.api.data.Forms.{ date, longNumber, mapping, nonEmptyText, optional }
+import play.api.data.Forms.{ date, longNumber, mapping, nonEmptyText, optional, number }
 import play.api.i18n.I18nSupport
 import play.api.mvc.{ AbstractController, ControllerComponents, Flash, RequestHeader }
 import views.html
