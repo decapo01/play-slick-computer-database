@@ -22,11 +22,11 @@ class CompanyController @Inject()(dbConfigProvider: DatabaseConfigProvider,
     })
   }
 
-  def nuevo = Action { implicit  req =>
+  def create = Action { implicit  req =>
     Ok("")
   }
 
-  def create = Action {implicit req =>
+  def insert = Action {implicit req =>
     Ok("")
   }
 

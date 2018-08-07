@@ -1,46 +1,58 @@
 package controllers
 
-import javax.inject.Inject
-
-import dao.{ CompaniesDAO, ComputersDAO }
-import models.Computer
+import javax.inject.{Inject, Singleton}
+import dao.{CompaniesDAO, ComputersDAO}
+import models.{Company, Computer, Page}
 import play.api.data.Form
-import play.api.data.Forms.{ date, longNumber, mapping, nonEmptyText, optional, number }
+import play.api.data.Forms.{date, longNumber, mapping, nonEmptyText, number, optional}
 import play.api.i18n.I18nSupport
-import play.api.mvc.{ AbstractController, ControllerComponents, Flash, RequestHeader }
+import play.api.mvc.{AbstractController, ControllerComponents, Flash, RequestHeader}
 import views.html
-
 import play.api.db.slick.DatabaseConfigProvider
+import repository.{CompanyCriteria, CompanyRepository, ComputerCriteria, ComputerRepository}
 
 import scala.concurrent.ExecutionContext
 
 /** Manage a database of computers. */
+@Singleton()
 class Application @Inject() (
 		dbConfigProvider: DatabaseConfigProvider,
     //companiesDao: CompaniesDAO,
     computersDao: ComputersDAO,
+    computerRepository: ComputerRepository,
+    companyRepository: CompanyRepository,
     controllerComponents: ControllerComponents
 )(implicit executionContext: ExecutionContext) extends AbstractController(controllerComponents) with I18nSupport {
 
+
+
 	val companiesDao: CompaniesDAO = new CompaniesDAO(dbConfigProvider)
+
+
   /** This result directly redirect to the application home.*/
   val Home = Redirect(routes.Application.list(0, 2, ""))
+
+
 
   /** Describe the computer form (used in both edit and create screens).*/
   val computerForm = Form(
     mapping(
-      "id" -> optional(longNumber),
-      "name" -> nonEmptyText,
-      "introduced" -> optional(date("yyyy-MM-dd")),
+      "id"           -> optional(longNumber),
+      "name"         -> nonEmptyText,
+      "introduced"   -> optional(date("yyyy-MM-dd")),
       "discontinued" -> optional(date("yyyy-MM-dd")),
-      "company" -> optional(longNumber)
+      "company"      -> optional(longNumber)
     )(Computer.apply)(Computer.unapply)
   )
+
+
 
   // -- Actions
 
   /** Handle default path requests, redirect to computers list */
   def index = Action { Home }
+
+
 
   /**
    * Display the paginated list of computers.
@@ -50,9 +62,29 @@ class Application @Inject() (
    * @param filter Filter applied on computer names
    */
   def list(page: Int, orderBy: Int, filter: String) = Action.async { implicit request =>
-    val computers = computersDao.list(page = page, orderBy = orderBy, filter = ("%" + filter + "%"))
-    computers.map(cs => Ok(html.list(cs, orderBy, filter)))
+
+    val inputFilter = if(filter.trim.isEmpty) None else Some(filter)
+
+    val computerCriteria = ComputerCriteria(page = page, filter = inputFilter)
+
+    for {
+      computers <- computerRepository.findPage(computerCriteria)
+      companyIds = computers.items.map(_.companyId).filter(_.isDefined).map(_.get)
+      companyCriteria = CompanyCriteria(idsIn = Some(companyIds))
+      companies <- companyRepository.findAllByCriteria(companyCriteria)
+    }
+    yield {
+      val computerCompanyRelation = computers.items.map{ computer =>
+        val companyForComputer = companies.find(_.id == computer.companyId).getOrElse(Company(id = None,name = ""))
+        (computer,companyForComputer)
+      }
+
+      val computerPage = Page(items = computerCompanyRelation, page = computers.page, total = computers.total, offset = computers.offset)
+
+      Ok(html.list(computerPage, orderBy, filter))
+    }
   }
+
 
   /**
    * Display the 'edit form' of a existing Computer.
@@ -60,16 +92,23 @@ class Application @Inject() (
    * @param id Id of the computer to edit
    */
   def edit(id: Long) = Action.async { implicit rs =>
+
     val computerAndOptions = for {
-      computer <- computersDao.findById(id)
-      options <- companiesDao.options()
-    } yield (computer, options)
+      computer <- computerRepository.findById(id)
+      companies  <- companyRepository.findAll
+    }
+    yield {
+
+      val options = companies.filter(_.id.isDefined).map(c => (c.id.get.toString,c.name))
+
+      (computer, options)
+    }
 
     computerAndOptions.map {
       case (computer, options) =>
         computer match {
           case Some(c) => Ok(html.editForm(id, computerForm.fill(c), options))
-          case None => NotFound
+          case None    => NotFound
         }
     }
   }
@@ -80,37 +119,51 @@ class Application @Inject() (
    * @param id Id of the computer to edit
    */
   def update(id: Long) = Action.async { implicit rs =>
+
     computerForm.bindFromRequest.fold(
-      formWithErrors => companiesDao.options().map(options => BadRequest(html.editForm(id, formWithErrors, options))),
+
+      formWithErrors =>
+        companiesDao.options().map(options => BadRequest(html.editForm(id, formWithErrors, options))),
+
       computer => {
-        for {
-          _ <- computersDao.update(id, computer)
-        } yield Home.flashing("success" -> "Computer %s has been updated".format(computer.name))
+
+        computerRepository.save(computer.copy(id = Some(id))).map { c =>
+          Home.flashing("success" -> s"Computer ${computer.name} has been updated")
+        }
       }
     )
   }
 
   /** Display the 'new computer form'. */
   def create = Action.async { implicit rs =>
+
     companiesDao.options().map(options => Ok(html.createForm(computerForm, options)))
+
   }
 
   /** Handle the 'new computer form' submission. */
   def save = Action.async { implicit rs =>
+
     computerForm.bindFromRequest.fold(
-      formWithErrors => companiesDao.options().map(options => BadRequest(html.createForm(formWithErrors, options))),
+
+      formWithErrors =>
+        companiesDao.options().map(options => BadRequest(html.createForm(formWithErrors, options))),
+
       computer => {
         for {
           _ <- computersDao.insert(computer)
-        } yield Home.flashing("success" -> "Computer %s has been created".format(computer.name))
+        }
+        yield Home.flashing("success" -> "Computer %s has been created".format(computer.name))
       }
     )
   }
 
   /** Handle computer deletion. */
   def delete(id: Long) = Action.async { implicit rs =>
+
     for {
       _ <- computersDao.delete(id)
-    } yield Home.flashing("success" -> "Computer has been deleted")
+    }
+    yield Home.flashing("success" -> "Computer has been deleted")
   }
 }

@@ -12,6 +12,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 @Singleton()
 class ComputersDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(implicit executionContext: ExecutionContext) extends CompaniesComponent
     with HasDatabaseConfigProvider[JdbcProfile] {
+
   import profile.api._
 
   class Computers(tag: Tag) extends Table[Computer](tag, "COMPUTER") {
@@ -54,7 +55,8 @@ class ComputersDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProv
       (for {
         (computer, company) <- computers joinLeft companies on (_.companyId === _.id)
         if computer.name.toLowerCase like filter.toLowerCase
-      } yield (computer, company.map(_.id), company.map(_.name)))
+      }
+      yield (computer, company.map(_.id), company.map(_.name)))
         .drop(offset)
         .take(pageSize)
 
