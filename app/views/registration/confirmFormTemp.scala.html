@@ -1,0 +1,24 @@
+@(confirmForm: Form[ConfirmForm])(implicit request: RequestHeader, messages: Messages,flash: Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{FieldConstructor(twitterBootstrapInput.f)}
+
+@main {
+
+    @flash.get("msg").map { msg =>
+        <h3>@msg</h3>
+    }
+
+    <h2>Blah</h2>
+
+    @form(action = routes.UserRegistrationController.postConfirm){
+
+        @CSRF.formField
+
+        @inputText(confirmForm("code"),'_label -> "Code")
+
+        <input type="submit">
+    }
+
+}

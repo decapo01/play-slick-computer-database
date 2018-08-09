@@ -4,7 +4,7 @@
 		module="computer-database-build"
 		revision="0.1-SNAPSHOT"
 		status="integration"
-		publication="20180805231914"
+		publication="20180808205948"
 		e:sbtVersion="1.0" e:scalaVersion="2.12"
 	>
 		<description>

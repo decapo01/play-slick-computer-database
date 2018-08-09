@@ -1,0 +1,26 @@
+@(registrationForm: Form[RegistrationForm])(implicit request: RequestHeader, messages: Messages,flash: Flash)
+
+@import helper._
+
+@implicitFieldConstructor = @{FieldConstructor(twitterBootstrapInput.f)}
+
+@main {
+
+    <h2>Blah</h2>
+
+    @flash.get("msg").map { msg =>
+        <h3>@msg</h3>
+    }
+
+    @form(action = routes.UserRegistrationController.post){
+
+        @CSRF.formField
+
+        @inputText(registrationForm("email"),'_label -> "Email")
+        @inputPassword(registrationForm("password"),'_label -> "Password")
+        @inputPassword(registrationForm("confirmPassword"),'_label -> "Confirm Password")
+
+        <input type="submit">
+    }
+
+}

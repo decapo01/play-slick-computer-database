@@ -1,0 +1,18 @@
+@(loginForm: Form[LoginData])(implicit request: RequestHeader, messages: Messages)
+
+@import helper._
+
+@implicitFieldConstructor = @{FieldConstructor(twitterBootstrapInput.f)}
+
+@main {
+
+    @form(action = routes.LoginController.postLogin()){
+
+        @CSRF.formField
+
+        @inputText(loginForm("email"),'_label -> "Email")
+        @inputPassword(loginForm("password"),'_label -> "Password")
+
+        <input type="submit">
+    }
+}

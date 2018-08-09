@@ -21,6 +21,10 @@
 
 @main {
 
+    @flash.get("msg").map{ msg =>
+      <h3>@msg</h3>
+    }
+
     <h1>@Messages("computers.list.title", currentPage.total)</h1>
 
     @flash.get("success").map { message =>

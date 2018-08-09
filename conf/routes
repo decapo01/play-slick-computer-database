@@ -5,6 +5,19 @@
 # Default path will just redirect to the computer list
 GET     /                           controllers.Application.index
 
+GET     /restricted                 controllers.Application.restricted
+
+GET     /signup                     controllers.UserRegistrationController.get
+POST    /signup                     controllers.UserRegistrationController.post
+
+GET     /confirm                    controllers.UserRegistrationController.getConfirm
+POST    /confirm                    controllers.UserRegistrationController.postConfirm
+
+GET     /login                      controllers.LoginController.getLogin
+POST    /login                      controllers.LoginController.postLogin
+
+GET     /logout                     controllers.LoginController.logout
+
 # Computers list (look at the default values for pagination parameters)
 GET     /computers                  controllers.Application.list(p:Int ?= 0, s:Int ?= 2, f ?= "")
 
@@ -17,7 +30,13 @@ GET     /computers/:id              controllers.Application.edit(id:Long)
 POST    /computers/:id              controllers.Application.update(id:Long)
 
 
-GET     /companies                  controllers.CompanyController.index
+GET     /companies                  controllers.CompanyController.index(page:Int ?= 0, sort:Int ?= 2, filter ?= "")
+GET     /companies/new              controllers.CompanyController.create
+POST    /companies/new              controllers.CompanyController.insert
+GET     /companies/:id              controllers.CompanyController.edit(id: Long)
+POST    /companies/:id              controllers.CompanyController.update(id: Long)
+GET     /companies/remove/:id       controllers.CompanyController.remove(id: Long)
+POST    /companies/remove/:id       controllers.CompanyController.delete(id: Long)
 
 # Delete a computer
 POST    /computers/:id/delete       controllers.Application.delete(id:Long)

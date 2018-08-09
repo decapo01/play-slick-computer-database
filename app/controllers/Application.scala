@@ -4,18 +4,20 @@ import javax.inject.{Inject, Singleton}
 import dao.{CompaniesDAO, ComputersDAO}
 import models.{Company, Computer, Page}
 import play.api.data.Form
-import play.api.data.Forms.{date, longNumber, mapping, nonEmptyText, number, optional}
+import play.api.data.Forms._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{AbstractController, ControllerComponents, Flash, RequestHeader}
 import views.html
 import play.api.db.slick.DatabaseConfigProvider
-import repository.{CompanyCriteria, CompanyRepository, ComputerCriteria, ComputerRepository}
+import play.mvc.Security.AuthenticatedAction
+import repository._
 
 import scala.concurrent.ExecutionContext
 
 /** Manage a database of computers. */
 @Singleton()
 class Application @Inject() (
+    userAction: UserAction,
 		dbConfigProvider: DatabaseConfigProvider,
     //companiesDao: CompaniesDAO,
     computersDao: ComputersDAO,
@@ -165,5 +167,9 @@ class Application @Inject() (
       _ <- computersDao.delete(id)
     }
     yield Home.flashing("success" -> "Computer has been deleted")
+  }
+
+  def restricted = (userAction andThen AuthenticationAction(Roles.admin)) { req =>
+    Ok("ok")
   }
 }
