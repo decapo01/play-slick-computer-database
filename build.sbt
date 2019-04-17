@@ -17,3 +17,9 @@ libraryDependencies ++= Seq(
 	"com.h2database"   	%  "h2"                       % "1.4.196",
 	"org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0" % "test"
 )
+
+// META-INF discarding
+assemblyMergeStrategy in assembly := {
+       case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+       case x => MergeStrategy.first
+   }
